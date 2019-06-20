@@ -27,15 +27,9 @@ func SetNtfHandle(handle ntfHandle) {
 		go notificationProcess(handle)
 	})
 }
+
 func SetErrHandle(handle errHandle) {
 	errOnce.Do(func() {
 		go errProcess(handle)
 	})
-}
-
-func Close() error {
-	if s != nil {
-		return s.Close()
-	}
-	return nil
 }

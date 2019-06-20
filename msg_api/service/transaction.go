@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/imkuqin-zw/final_consistency/msg_api/models"
 	"time"
 )
@@ -19,17 +20,20 @@ func (s *Service) StoreMsgWaitingConfirm(msg *models.TransactionMsg) error {
 }
 
 //确认预发送消息并发送消息
-func (s *Service) ConfirmAndSendMessage(msgId string) error {
+func (s *Service) ConfirmAndSendMessage(ctx context.Context, msgId string) error {
 	msg, err := repo.GetTransMsgByMsgId(msgId)
 	if err != nil {
 		return err
 	}
-	_, err = repo.UpdateTransMsgStatusByMsgId(msg, models.TransStatusSending)
+	var affect int64
+	affect, err = repo.UpdateTransMsgStatusByMsgId(msg, models.TransStatusSending)
 	if err != nil {
 		return err
 	}
-
-	return err
+	if affect == 0 {
+		return nil
+	}
+	return msgQue.SendMsg(ctx, msg)
 }
 
 //查询并处理超时的预发送消息

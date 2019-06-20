@@ -1,11 +1,11 @@
 package repository
 
 import (
+	"github.com/imkuqin-zw/final_consistency/basic/config"
 	"github.com/imkuqin-zw/final_consistency/msg_api/models"
 	"github.com/imkuqin-zw/final_consistency/msg_api/repository/mysql"
+	z "github.com/imkuqin-zw/final_consistency/plugins/zap"
 	"go.uber.org/zap"
-	"shop/basic/config"
-	z "shop/plugins/zap"
 	"sync"
 )
 

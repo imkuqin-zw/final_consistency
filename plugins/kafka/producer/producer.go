@@ -1,10 +1,16 @@
 package producer
 
 import (
-	"context"
-	"final_consistency/basic/config"
 	"github.com/Shopify/sarama"
-	"time"
+	"github.com/imkuqin-zw/final_consistency/basic/config"
+	"sync"
+)
+
+var (
+	initOnce    sync.Once
+	errorOnce   sync.Once
+	successOnce sync.Once
+	p           Producer
 )
 
 type Config struct {
@@ -14,12 +20,9 @@ type Config struct {
 }
 
 type Producer interface {
-	isSync() bool
-	Send(context.Context, *sarama.ProducerMessage) (err error)
+	Close() error
+	Send(*sarama.ProducerMessage) error
 }
-
-type errHandle func(*sarama.ProducerError)
-type sucHandle func(*sarama.ProducerMessage)
 
 func getConf() *Config {
 	c := config.C()
@@ -35,26 +38,33 @@ func getConf() *Config {
 	return cfg
 }
 
-func Input(c context.Context, msg *sarama.ProducerMessage) (err error) {
-	if !p.conf.Sync {
-		msg.Metadata = c
-		p.AsyncProducer.Input() <- msg
-	} else {
-		if _, _, err = p.SyncProducer.SendMessage(msg); err != nil {
-			sarama.Logger.Print("syncProducer send msg(%v) fault error(%v): ", msg, err)
+func init() {
+	initOnce.Do(func() {
+		cfg := getConf()
+		if cfg.Sync {
+			p = newSyncProducer(cfg)
+		} else {
+			p = newAsyncProducer(cfg)
 		}
-	}
-	return
+	})
 }
 
-func Close() (err error) {
-	if !p.conf.Sync {
-		if p.AsyncProducer != nil {
-			return p.AsyncProducer.Close()
+func GetProducer() Producer {
+	return p
+}
+
+func SetErrHandle(handle errHandle) {
+	errorOnce.Do(func() {
+		if c, ok := p.(*AsyncProducer); ok {
+			go c.errProcess(handle)
 		}
-	}
-	if p.SyncProducer != nil {
-		return p.SyncProducer.Close()
-	}
-	return
+	})
+}
+
+func SetSuccessHandle(handle sucHandle) {
+	successOnce.Do(func() {
+		if c, ok := p.(*AsyncProducer); ok {
+			go c.successProcess(handle)
+		}
+	})
 }

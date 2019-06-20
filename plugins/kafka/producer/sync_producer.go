@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"github.com/Shopify/sarama"
 	"time"
 )
@@ -25,11 +24,7 @@ func newSyncProducer(cfg *Config) Producer {
 	panic("[kafka] init sync producer fault")
 }
 
-func (sp *SyncProducer) Send(c context.Context, msg *sarama.ProducerMessage) error {
+func (sp *SyncProducer) Send(msg *sarama.ProducerMessage) error {
 	_, _, err := sp.SendMessage(msg)
 	return err
-}
-
-func (sp *SyncProducer) isSync() bool {
-	return true
 }

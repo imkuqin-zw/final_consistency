@@ -19,7 +19,7 @@ func (r *RepoMysql) GetTransMsgByMsgId(msgId string) (*models.TransactionMsg, er
 	return m, err
 }
 
-func (r *RepoMysql) UpdateTransMsgStatusByMsgId(msg *models.TransactionMsg, status int8) (int64, error) {
+func (r *RepoMysql) UpdateTransMsgStatusByMsgId(msg *models.TransactionMsg, status uint8) (int64, error) {
 	data := map[string]interface{}{
 		"status":    status,
 		"update_at": time.Now(),

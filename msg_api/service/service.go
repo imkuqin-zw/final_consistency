@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/imkuqin-zw/final_consistency/msg_api/msg_queue"
 	"github.com/imkuqin-zw/final_consistency/msg_api/repository"
 	"github.com/imkuqin-zw/final_consistency/msg_api/utils/snowflake"
 	z "shop/plugins/zap"
@@ -8,11 +9,12 @@ import (
 )
 
 var (
-	once sync.Once
-	log  *z.Logger
-	s    *Service
-	uuid *snowflake.Snowflake
-	repo repository.Repository
+	once   sync.Once
+	log    *z.Logger
+	s      *Service
+	uuid   *snowflake.Snowflake
+	repo   repository.Repository
+	msgQue msg_queue.MsgQue
 )
 
 type Service struct {

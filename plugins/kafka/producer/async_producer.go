@@ -1,10 +1,12 @@
 package producer
 
 import (
-	"context"
 	"github.com/Shopify/sarama"
 	"time"
 )
+
+type errHandle func(*sarama.ProducerError)
+type sucHandle func(*sarama.ProducerMessage)
 
 type AsyncProducer struct {
 	sarama.AsyncProducer
@@ -28,14 +30,9 @@ func newAsyncProducer(cfg *Config) Producer {
 	panic("[kafka] init async producer fault")
 }
 
-func (ap *AsyncProducer) Send(c context.Context, msg *sarama.ProducerMessage) error {
-	msg.Metadata = c
+func (ap *AsyncProducer) Send(msg *sarama.ProducerMessage) error {
 	ap.Input() <- msg
 	return nil
-}
-
-func (ap *AsyncProducer) isSync() bool {
-	return false
 }
 
 func (ap *AsyncProducer) errProcess(deal errHandle) {

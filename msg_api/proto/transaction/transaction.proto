@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package zw.com.shop.srv.inventory;
+
+service Transaction {
+    rpc PingPong(stream Ping) returns (stream Pong) {}
+}
+
+message Ping {
+    int64 stroke = 1;
+}
+
+message Pong {
+    int64 stroke = 1;
+}
+

@@ -1,9 +1,24 @@
 syntax = "proto3";
 
-package zw.com.shop.srv.inventory;
+package final_consistency.msg_api.transaction;
+
+import "google/protobuf/timestamp.proto";
 
 service Transaction {
-    rpc PingPong(stream Ping) returns (stream Pong) {}
+    rpc PingPong (stream Ping) returns (stream Pong) {
+    }
+    rpc CreateTransactionMsg (ReqCreateTransMsg) returns (MsgId) {
+    }
+    rpc ConfirmAndSendMessage (MsgId) returns (NoContent) {
+    }
+    rpc DeleteMessageByMsgId (MsgId) returns (NoContent) {
+    }
+    rpc ResendMessage (MsgId) returns (NoContent) {
+    }
+    rpc SetMessageToAlreadyDead (MsgId) returns (NoContent) {
+    }
+    rpc ConfirmMessageSuccess (MsgId) returns (NoContent) {
+    }
 }
 
 message Ping {
@@ -12,5 +27,39 @@ message Ping {
 
 message Pong {
     int64 stroke = 1;
+}
+
+message MsgId {
+    string value = 1;
+}
+
+message NoContent {
+}
+
+message TransactionMsg {
+    uint64 id = 1;
+    uint64 msg_id = 2;
+    uint32 status = 3;
+    uint64 editor = 4;
+    uint64 creator = 5;
+    uint64 msg_data_type = 6;
+    string msg_body = 7;
+    google.protobuf.Timestamp update_at = 8;
+    google.protobuf.Timestamp create_at = 9;
+    string consumer_que = 10;
+    uint32 send_times = 11;
+    bool already_dead = 12;
+    string remark = 13;
+    bytes extension = 14;
+}
+
+message ReqCreateTransMsg {
+    uint64 editor = 1;
+    uint64 creator = 2;
+    uint64 msg_data_type = 3;
+    string msg_body = 4;
+    string consumer_que = 5;
+    string remark = 6;
+    bytes extension = 7;
 }
 

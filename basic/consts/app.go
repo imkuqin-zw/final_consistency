@@ -1,3 +1,3 @@
 package consts
 
-const CFG_PREFIX = "zw.com/shop"
+const CfgPrefix = "zw.com/final_consistency"

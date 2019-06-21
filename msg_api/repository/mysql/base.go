@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"github.com/imkuqin-zw/final_consistency/msg_api/repository"
 	"github.com/jinzhu/gorm"
 	m "shop/plugins/mysql"
 	z "shop/plugins/zap"
@@ -32,6 +31,6 @@ func (r *RepoMysql) getById(tx *gorm.DB, m interface{}) error {
 	return tx.Model(m).First(m).Error
 }
 
-func NewRepo() repository.Repository {
+func NewRepo() *RepoMysql {
 	return &RepoMysql{}
 }

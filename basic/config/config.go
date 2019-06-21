@@ -2,9 +2,9 @@ package config
 
 import (
 	"fmt"
+	"github.com/imkuqin-zw/final_consistency/basic/consts"
 	"github.com/micro/go-config"
 	"github.com/micro/go-log"
-	"shop/basic/consts"
 	"strings"
 	"sync"
 )
@@ -71,7 +71,7 @@ func (c *configurator) init(ops Options) (err error) {
 	}
 	c.conf = config.NewConfig()
 	c.appName = ops.AppName
-	c.appPrefix = strings.Split(consts.CFG_PREFIX, "/")
+	c.appPrefix = strings.Split(consts.CfgPrefix, "/")
 	c.pathPrefix = append(c.appPrefix, c.appName)
 
 	// 加载配置

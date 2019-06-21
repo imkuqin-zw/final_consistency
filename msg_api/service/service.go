@@ -21,12 +21,12 @@ type Service struct {
 	version uint32
 }
 
-func Init() {
+func Init(version uint32) {
 	once.Do(func() {
 		log = z.GetLogger()
 		uuid = snowflake.GetSnowkflak()
 		repo = repository.GetRepo()
-		s = &Service{}
+		s = &Service{version: version}
 	})
 }
 

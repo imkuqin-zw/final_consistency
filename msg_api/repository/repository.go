@@ -25,9 +25,23 @@ type RepoConf struct {
 }
 
 type TransactionMsg interface {
+	//获取事务
 	GetTransMsgByMsgId(string) (*models.TransactionMsg, error)
+
+	//更新事务状态
 	UpdateTransMsgStatusByMsgId(*models.TransactionMsg, uint8) (int64, error)
+
+	//删除事务
+	DeleteTransMsgByMsgId(string) (int64, error)
+
+	//创建事务
 	InsertTransMsg(*models.TransactionMsg) error
+
+	//更新事务发送次数
+	UpdateTransMsgSendTimesByMsgId(string) (int64, error)
+
+	//将事务设置为死亡状态
+	SetTransMsgAlreadyDeadByMsgId(string) (int64, error)
 }
 
 type Repository interface {

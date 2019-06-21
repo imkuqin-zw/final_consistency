@@ -1,6 +1,6 @@
 package basic
 
-import "shop/basic/config"
+import "github.com/imkuqin-zw/final_consistency/basic/config"
 
 var (
 	pluginFuncs []func()

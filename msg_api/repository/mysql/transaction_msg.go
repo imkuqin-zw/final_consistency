@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"github.com/imkuqin-zw/final_consistency/msg_api/models"
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
@@ -29,10 +30,33 @@ func (r *RepoMysql) UpdateTransMsgStatusByMsgId(msg *models.TransactionMsg, stat
 }
 
 func (r *RepoMysql) updateTransMsg(data map[string]interface{}, query string, arg ...interface{}) (int64, error) {
-	res := db.Where(query, arg).Update(data)
+	res := db.Where(query, arg).Updates(data)
 	return res.RowsAffected, res.Error
 }
 
 func (r *RepoMysql) InsertTransMsg(m *models.TransactionMsg) error {
 	return r.insert(db, m)
+}
+
+func (r *RepoMysql) DeleteTransMsgByMsgId(msgId string) (int64, error) {
+	res := db.Where("msg_id = ?", msgId).Delete(&models.TransactionMsg{})
+	return res.RowsAffected, res.Error
+}
+
+func (r *RepoMysql) UpdateTransMsgSendTimesByMsgId(msgId string) (int64, error) {
+	data := map[string]interface{}{
+		"send_times": gorm.Expr("send_times + ?", 1),
+		"update_at":  time.Now(),
+	}
+	query := "msg_id = ?"
+	return r.updateTransMsg(data, query, msgId)
+}
+
+func (r *RepoMysql) SetTransMsgAlreadyDeadByMsgId(msgId string) (int64, error) {
+	data := map[string]interface{}{
+		"already_dead": true,
+		"update_at":    time.Now(),
+	}
+	query := "msg_id = ?"
+	return r.updateTransMsg(data, query, msgId)
 }

@@ -25,7 +25,7 @@ type RepoConf struct {
 }
 
 type MsgQue interface {
-	SendMsg(context.Context, interface{}) error
+	SendMsg(context.Context, string, string) error
 }
 
 func Init() {

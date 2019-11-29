@@ -103,10 +103,6 @@ func (l *Logger) loadCfg() {
 		l.Opts.MaxSize = 50
 	}
 
-	if l.Opts.MaxBackups == 0 {
-		l.Opts.MaxBackups = 3
-	}
-
 	if l.Opts.MaxAge == 0 {
 		l.Opts.MaxAge = 30
 	}
@@ -118,7 +114,6 @@ func (l *Logger) setSyncers() {
 		return zapcore.AddSync(&lumberjack.Logger{
 			Filename:   l.Opts.LogFileDir + sp + l.Opts.AppName + "-" + fN,
 			MaxSize:    l.Opts.MaxSize,
-			MaxBackups: l.Opts.MaxBackups,
 			MaxAge:     l.Opts.MaxAge,
 			Compress:   true,
 			LocalTime:  true,
@@ -139,7 +134,7 @@ func (l *Logger) cores() zap.Option {
 	consoleEncoder := zapcore.NewConsoleEncoder(l.zapConfig.EncoderConfig)
 
 	errPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl > zapcore.WarnLevel && zapcore.WarnLevel-l.zapConfig.Level.Level() > -1
+		return lvl > zapcore.WarnLevel && zapcore.ErrorLevel-l.zapConfig.Level.Level() > -1
 	})
 	warnPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl == zapcore.WarnLevel && zapcore.WarnLevel-l.zapConfig.Level.Level() > -1
